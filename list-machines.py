@@ -19,18 +19,22 @@ def list_machines():
                     name = tag["Value"]
                     break
             state = instance["State"]["Name"]
-            machines.append((state, name, instance["InstanceId"]))
+            instance_id = instance["InstanceId"]
+            address = instance.get("PublicIpAddress", "")
+            if not address:
+                address = instance.get("PrivateIpAddress", "")
+            machines.append((state, name, instance_id, address))
 
     machines.sort()
     current_state = None
     for each in machines:
-        state, name, instance_id = each
+        state, name, instance_id, address = each
         if state != current_state:
             if current_state:
                 print()
             current_state = state
             print("State:", current_state)
-        print(instance_id, name)
+        print(instance_id, name, address)
 
 
 def main():
