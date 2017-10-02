@@ -5,6 +5,7 @@ There are scripts to:
 * create (and terminate) a number of machines
 * list machines and their state
 * run a command on all machines
+* list CloudFormation stacks
 
 Example:
 ```bash
@@ -89,3 +90,15 @@ there are spaces in the command.
 ## list-machines
 
 Lists all machines on your account, grouped by state.
+
+## list-stacks
+
+Lists all CloudFormation stacks on your account.
+
+## stack-status
+
+Shows the status of the given stack and its resources.
+
+#### --stack-name *stack* or -s *name*
+
+The name of the stack.

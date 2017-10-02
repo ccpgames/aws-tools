@@ -1,4 +1,3 @@
-import pprint
 import sys
 
 import boto3
@@ -11,7 +10,6 @@ def list_stacks():
 
     for each in stacks:
         print(each["StackName"])
-    #pprint.pprint(stacks)
 
 
 def main():
