@@ -19,7 +19,8 @@ def create_machines(args):
         ImageId=args.image,
         InstanceType=args.size,
         KeyName=args.key,
-        SecurityGroups=[args.security_group],
+        SecurityGroupIds=[args.security_group],
+        SubnetId=args.subnet,
         TagSpecifications=tags,
         MinCount=args.count,
         MaxCount=args.count
@@ -100,6 +101,11 @@ def main():
         "-c", "--security-group",
         required=True,
         help="The security group"
+    )
+    parser.add_argument(
+        "-u", "--subnet",
+        required=True,
+        help="The subnet"
     )
     parser.add_argument(
         "-n", "--count",
