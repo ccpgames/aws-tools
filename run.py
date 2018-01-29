@@ -48,16 +48,16 @@ def get_machines(args):
                     name = tag["Value"]
                     break
             instance_id = instance["InstanceId"]
-            dns = instance["PublicDnsName"]
+            ip = instance["PrivateIpAddress"]
             key = instance["KeyName"]
-            machines.append({"InstanceId": instance_id, "Name": name, "PublicDnsName": dns, "KeyName": key})
+            machines.append({"InstanceId": instance_id, "Name": name, "PrivateIpAddress": ip, "KeyName": key})
 
     return machines
 
 
 
 def run_command_on_machine(args, machine, output_stream):
-    dns_name = machine["PublicDnsName"]
+    dns_name = machine["PrivateIpAddress"]
     key_name = machine["KeyName"]
     cmd_template = "ssh -t -i %s.pem ubuntu@%s \"stty isig intr ^N -echoctl ; trap '/bin/true' SIGINT; %s\""
     cmd = cmd_template % (key_name, dns_name, args.command)
