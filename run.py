@@ -9,6 +9,7 @@ import boto3
 
 
 def run_command(cmd, output_stream):
+    print("Running command:", cmd)
 
     process = subprocess.Popen(
         cmd,
@@ -17,6 +18,8 @@ def run_command(cmd, output_stream):
         stderr=subprocess.PIPE
     )
     output, errors = process.communicate()
+    if errors:
+        print(errors.decode())
     if output:
         output_stream.write(output.decode())
 
@@ -68,11 +71,9 @@ def run_command_on_machine(args, machine, output_stream):
         scp = "scp -i %s.pem %s ubuntu@%s:%s" % \
               (key_name, args.upload, dns_name, dest)
         run_command(scp, output_stream)
-        print(dest)
         if dest.endswith(".tgz"):
             output_stream.write("Unpacking %s\n" % dest)
             unpack = "ssh -i %s.pem ubuntu@%s \"tar -xvzf %s\"" % (key_name, dns_name, dest)
-            print(unpack)
             run_command(unpack, output_stream)
 
     process = subprocess.Popen(
@@ -96,6 +97,7 @@ def run_on_machines(args):
     try:
         for machine in machines:
             filename = machine["Name"] + ".log"
+            print("Writing logs to", filename)
             output_for_machine = open(filename, "w")
             p = run_command_on_machine(args, machine, output_for_machine)
             processes.append((p, output_for_machine))
