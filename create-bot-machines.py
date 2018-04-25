@@ -84,7 +84,7 @@ def main():
 
     parser.add_argument(
         "-i", "--image",
-        default="ami-785db401",
+        default="ami-f90a4880",
         help="The machine image (AMI) to use"
     )
     parser.add_argument(
