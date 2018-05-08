@@ -19,14 +19,9 @@ def get_private_ip(name):
     for groups in reservations:
         instances = groups["Instances"]
         for instance in instances:
-            tags = instance["Tags"]
-            name = ""
-            for tag in tags:
-                if tag["Key"] == "Name":
-                    name = tag["Value"]
-                    break
             state = instance["State"]["Name"]
-            print(instance["PrivateIpAddress"])
+            if state == "running":
+                print(instance["PrivateIpAddress"])
 
 
 def main():
