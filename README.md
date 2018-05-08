@@ -102,3 +102,7 @@ Shows the status of the given stack and its resources.
 #### --stack-name *stack* or -s *name*
 
 The name of the stack.
+
+## get-private-ip
+
+Gets the private ip address of a named machine.
