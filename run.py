@@ -59,11 +59,11 @@ def get_machines(args):
 
 
 
-def run_command_on_machine(args, machine, output_stream):
+def run_command_on_machine(args, machine, output_stream, index):
     dns_name = machine["PrivateIpAddress"]
     key_name = machine["KeyName"]
-    cmd_template = "ssh -t -i %s.pem ubuntu@%s \"stty isig intr ^N -echoctl ; trap '/bin/true' SIGINT; %s\""
-    cmd = cmd_template % (key_name, dns_name, args.command)
+    cmd_template = "ssh -t -i %s.pem ubuntu@%s \"stty isig intr ^N -echoctl ; trap '/bin/true' SIGINT; export BOTINDEX=%s; %s\""
+    cmd = cmd_template % (key_name, dns_name, index, args.command)
 
     if args.upload:
         output_stream.write("Copying %s to %s\n" % (args.upload, dns_name))
@@ -95,12 +95,14 @@ def run_on_machines(args):
     processes = []
 
     try:
+        index = 0
         for machine in machines:
             filename = machine["Name"] + ".log"
             print("Writing logs to", filename)
             output_for_machine = open(filename, "w")
-            p = run_command_on_machine(args, machine, output_for_machine)
+            p = run_command_on_machine(args, machine, output_for_machine, index)
             processes.append((p, output_for_machine))
+            index += 1
 
         while processes:
             live_processes = []
@@ -110,8 +112,10 @@ def run_on_machines(args):
                         output, errors = process.communicate(timeout=0.1)
                         if output:
                             output_stream.write(output.decode())
+                            output_stream.flush()
                         if errors:
                             output_stream.write(errors.decode())
+                            output_stream.flush()
                     except subprocess.TimeoutExpired:
                         live_processes.append((process, output_stream))
 
@@ -124,8 +128,10 @@ def run_on_machines(args):
             output, errors = p.communicate()
             if output:
                 output_stream.write(output.decode())
+                output_stream.flush()
             if errors:
                 output_stream.write(errors.decode())
+                output_stream.flush()
 
 
 def main():
